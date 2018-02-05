@@ -5,23 +5,40 @@ const { ObjectID } = require('mongodb');
 const bodyParser = require('body-parser');
 const keys = require('./server/config/keys');
 const _ = require("lodash");
+var jsforce = require('jsforce');
 
 const app = express();
 app.use(bodyParser.json());
 mongoose.connect(keys.mongoURI);
 const { Todo } = require('./server/models/todo');
 
-
+var oauth2;
 //get all list
-app.get('/todos', async (req, res) => {
-    try{
+app.get('/todos',  (req, res) => {
+        oauth2 = new jsforce.OAuth2({
+            clientId : '3MVG9d8..z.hDcPJLTMPWMTpXADpiqAz03PaPJDpuO6x37Axcm.5xlME8CnHnazkGx6yTzFoYObLH9UJT8voP',
+            clientSecret : '4395029050457391337',
+            redirectUri : '/oauth2/callback'
+      });
+     
+   /* try{
         var todos = await Todo.find();
         if(todos){
             res.send(todos);
         }
     }catch(e){
        res.status(400).send(e); 
-    }
+    }*/
+});
+
+app.get('/oauth2/callback', (req, res) => {
+    console.log(oauth2);
+    var conn = new jsforce.Connection({ oauth2 : oauth2 });
+    var code = req.param('code');
+    conn.authorize(code, function(err, userInfo) {
+        console.log(err);
+    });
+   
 });
 
 //create todo

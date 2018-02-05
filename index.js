@@ -38,6 +38,8 @@ app.get('/todos', async (req, res) => {
             clientSecret : keys.clientSecret,
             redirectUri : 'https://todo211205.herokuapp.com/oauth2/callback'
       });
+
+      res.send(oauth2);
      
      
      

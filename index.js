@@ -9,6 +9,8 @@ var jsforce = require('jsforce');
 const session = require('express-session');
 const hbs = require('hbs')
 const app = express();
+const xmlparser = require('express-xml-bodyparser');
+app.use(xmlparser());
 
 app.set('view engine', hbs);
 app.use(bodyParser.json());
@@ -75,6 +77,7 @@ app.post('/todos', async (req, res) => {
 
 //update todo
 app.post("/new_contact", function(req, res) { 
+       console.log('hello');
        res.status(200).send();
        /* var notification = req.body["soapenv:envelope"]["soapenv:body"][0]["notifications"][0]; 
         var sessionId = notification["sessionid"][0]; var data = {}; if (notification["notification"] !== undefined) {

@@ -6,61 +6,54 @@ const bodyParser = require('body-parser');
 const keys = require('./server/config/keys');
 const _ = require("lodash");
 var jsforce = require('jsforce');
-
+const session = require('express-session');
+const hbs = require('hbs')
 const app = express();
+
+app.set('view engine', hbs);
 app.use(bodyParser.json());
+app.use(session({secret: 'S3CRE7', resave: true, saveUninitialized: true}));
 mongoose.connect(keys.mongoURI);
 const { Todo } = require('./server/models/todo');
 
-var oauth2;
-var accessToken;
-
-app.get('/', (req, res) => {
-    var conn = new jsforce.Connection({
-        oauth2 : {
-          // you can change loginUrl to connect to sandbox or prerelease env.
-          // loginUrl : 'https://test.salesforce.com',
-          clientId : keys.clientId,
-          clientSecret : keys.clientSecret,
-          redirectUri : 'https://todo211205.herokuapp.com/oauth2/callback'
-        }
-      });
-      conn.login('sumit.dev1@ceptes.com', 'sumit1234', function(err, userInfo) {
-           res.send(userInfo);
-           
-      });
-})
-//get all list
-app.get('/todos', async (req, res) => {
-      oauth2 = new jsforce.OAuth2({
-            loginUrl:'https://sumit8493-dev-ed.my.salesforce.com', 
-            clientId : keys.clientId,
-            clientSecret : keys.clientSecret,
-            redirectUri : 'https://todo211205.herokuapp.com/oauth2/callback'
-      });
-
-      
-     
-     
-     
-    /*try{
-        var todos = await Todo.find();
-        if(todos){
-            res.send(todos);
-        }
-    }catch(e){
-       res.status(400).send(e); 
-    }*/
+oauth2 = new jsforce.OAuth2({
+    loginUrl:'https://login.salesforce.com', 
+    clientId : keys.clientId,
+    clientSecret : keys.clientSecret,
+    redirectUri : 'http://localhost:5000/oauth2/callback'
 });
+
+//get all list
+
+  
+   app.get('/', function(req, res){
+        res.render('home.hbs');
+   });
+
+    app.get('/todos', async (req, res) => {
+        try{
+            var todos = await Todo.find();
+            if(todos){
+                res.send(todos);
+            }
+            }catch(e){
+                res.status(400).send(e); 
+            }
+    });
   app.get("/auth/login", function(req, res) {
     // Redirect to Salesforce login/authorization page
     res.redirect(oauth2.getAuthorizationUrl({scope: 'api id web refresh_token'}));
   });
-    app.get("/oauth2/callback", function(req, res) {
+  app.get("/oauth2/callback", function(req, res) {
+        console.log('-------callback-------');
         const conn = new jsforce.Connection({oauth2: oauth2});
         const code = req.query.code;
         conn.authorize(code, function(err, userInfo) {
-            res.send(userInfo);
+            req.session.accessToken = conn.accessToken;
+            req.session.instanceUrl = conn.instanceUrl;
+            req.session.refreshToken = conn.refreshToken;
+            res.redirect('/todos');
+            
         });
     
     });
@@ -81,6 +74,10 @@ app.post('/todos', async (req, res) => {
 });
 
 //update todo
+
+app.post('/newContact', (req, res) => {
+    res.send('hello how are u');
+});
 
 app.patch('/todos/:id', async (req, res) => {
     var id = req.params.id;
@@ -108,8 +105,9 @@ app.patch('/todos/:id', async (req, res) => {
 });
 
 //delete todo
-app.delete('/todos/:id', async (req, res) => {
+app.get('/todos/:id',isValid, async (req, res) => {
     var id = req.params.id;
+    console.log('----------id----'+id);
     if(!ObjectID.isValid(id)){
         return res.status(404).send();
     }
@@ -123,6 +121,14 @@ app.delete('/todos/:id', async (req, res) => {
         res.status(400).send(e);
     }
 });
+ function isValid(req, res, next){
+    console.log(req.session);
+    if (req.session.accessToken && req.session.instanceUrl) { 
+        console.log(req.session);
+        return next();
+    }
+    res.redirect('/'); 
+}
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {

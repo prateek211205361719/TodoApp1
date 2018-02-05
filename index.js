@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 //get all list
 app.get('/todos', async (req, res) => {
       oauth2 = new jsforce.OAuth2({
-            loginUrl:'https://login.salesforce.com', 
+            loginUrl:'https://sumit8493-dev-ed.my.salesforce.com', 
             clientId : keys.clientId,
             clientSecret : keys.clientSecret,
             redirectUri : 'https://todo211205.herokuapp.com/oauth2/callback'

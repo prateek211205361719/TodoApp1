@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
         }
       });
       conn.login('sumit.dev1@ceptes.com', 'sumit1234', function(err, userInfo) {
-           res.send(err);
+           res.send(userInfo);
            /* if (err) { return console.error(err); }
             // Now you can get the access token and instance URL information.
             // Save them to establish connection next time.
@@ -38,34 +38,12 @@ app.get('/', (req, res) => {
 })
 //get all list
 app.get('/todos', async (req, res) => {
-      /*oauth2 = new jsforce.OAuth2({
-            loginUrl:'https://login.salesforce.com',
+      oauth2 = new jsforce.OAuth2({
             clientId : keys.clientId,
             clientSecret : keys.clientSecret,
             redirectUri : 'https://todo211205.herokuapp.com/oauth2/callback'
       });
-      conn.login(username, password, function(err, userInfo) {
-        if (err) { return console.error(err); }*/
-         var conn = new jsforce.Connection({
-            oauth2 : {
-              // you can change loginUrl to connect to sandbox or prerelease env.
-              // loginUrl : 'https://test.salesforce.com',
-              clientId : keys.clientId,
-              clientSecret : keys.clientSecret,
-              redirectUri : 'https://todo211205.herokuapp.com/oauth2/callback'
-            }
-          });
-          conn.login(username, password, function(err, userInfo) {
-               res.send(err);
-               /* if (err) { return console.error(err); }
-                // Now you can get the access token and instance URL information.
-                // Save them to establish connection next time.
-                console.log(conn.accessToken);
-                console.log(conn.instanceUrl);
-                // logged in user property
-                console.log("User ID: " + userInfo.id);
-                console.log("Org ID: " + userInfo.organizationId);*/
-          });
+     
      
      
     /*try{
@@ -79,11 +57,12 @@ app.get('/todos', async (req, res) => {
 });
 
 app.get('/oauth2/callback', (req, res) => {
-    var conn = new jsforce.Connection({ oauth2 : oauth2 });
+    res.send(oauth2);
+   /* var conn = new jsforce.Connection({ oauth2 : oauth2 });
     var code = req.param('code');
     conn.authorize(code, function(err, userInfo) {
         res.send(err);
-    });
+    });*/
 });
 
 //create todo

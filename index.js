@@ -14,14 +14,14 @@ const { Todo } = require('./server/models/todo');
 
 var oauth2;
 //get all list
-app.get('/todos',  (req, res) => {
+app.get('/todos', async (req, res) => {
      oauth2 = new jsforce.OAuth2({
             clientId : '3MVG9d8..z.hDcPJLTMPWMTpXADpiqAz03PaPJDpuO6x37Axcm.5xlME8CnHnazkGx6yTzFoYObLH9UJT8voP',
             clientSecret : '4395029050457391337', 
             redirectUri : '/oauth2/callback'
       });
      
-   /* try{
+    /*try{
         var todos = await Todo.find();
         if(todos){
             res.send(todos);

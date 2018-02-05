@@ -27,16 +27,7 @@ app.get('/', (req, res) => {
       });
       conn.login('sumit.dev1@ceptes.com', 'sumit1234', function(err, userInfo) {
            res.send(userInfo);
-            if (err) { return console.error(err); }
-            // Now you can get the access token and instance URL information.
-            // Save them to establish connection next time.
-            console.log(conn.accessToken);
-            accessToken = conn.instanceUrl;
-            
-            console.log(conn.instanceUrl);
-            // logged in user property
-            console.log("User ID: " + userInfo.id);
-            console.log("Org ID: " + userInfo.organizationId);*/
+           
       });
 })
 //get all list

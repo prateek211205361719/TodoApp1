@@ -15,12 +15,34 @@ const { Todo } = require('./server/models/todo');
 var oauth2;
 //get all list
 app.get('/todos', async (req, res) => {
-     oauth2 = new jsforce.OAuth2({
+      /*oauth2 = new jsforce.OAuth2({
             loginUrl:'https://login.salesforce.com',
             clientId : keys.clientId,
             clientSecret : keys.clientSecret,
             redirectUri : 'https://todo211205.herokuapp.com/oauth2/callback'
       });
+      conn.login(username, password, function(err, userInfo) {
+        if (err) { return console.error(err); }*/
+         var conn = new jsforce.Connection({
+            oauth2 : {
+              // you can change loginUrl to connect to sandbox or prerelease env.
+              // loginUrl : 'https://test.salesforce.com',
+              clientId : keys.clientId,
+              clientSecret : keys.clientSecret,
+              redirectUri : 'https://todo211205.herokuapp.com/oauth2/callback'
+            }
+          });
+          conn.login(username, password, function(err, userInfo) {
+                if (err) { return console.error(err); }
+                // Now you can get the access token and instance URL information.
+                // Save them to establish connection next time.
+                console.log(conn.accessToken);
+                console.log(conn.instanceUrl);
+                // logged in user property
+                console.log("User ID: " + userInfo.id);
+                console.log("Org ID: " + userInfo.organizationId);
+          });
+     
      
     /*try{
         var todos = await Todo.find();

@@ -15,9 +15,9 @@ const { Todo } = require('./server/models/todo');
 var oauth2;
 //get all list
 app.get('/todos',  (req, res) => {
-        oauth2 = new jsforce.OAuth2({
+     oauth2 = new jsforce.OAuth2({
             clientId : '3MVG9d8..z.hDcPJLTMPWMTpXADpiqAz03PaPJDpuO6x37Axcm.5xlME8CnHnazkGx6yTzFoYObLH9UJT8voP',
-            clientSecret : '4395029050457391337',
+            clientSecret : '4395029050457391337', 
             redirectUri : '/oauth2/callback'
       });
      
@@ -32,13 +32,11 @@ app.get('/todos',  (req, res) => {
 });
 
 app.get('/oauth2/callback', (req, res) => {
-    console.log(oauth2);
     var conn = new jsforce.Connection({ oauth2 : oauth2 });
     var code = req.param('code');
     conn.authorize(code, function(err, userInfo) {
-        console.log(err);
+        if (err) { return console.error(err); }
     });
-   
 });
 
 //create todo

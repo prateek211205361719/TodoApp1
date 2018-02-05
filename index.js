@@ -13,6 +13,7 @@ mongoose.connect(keys.mongoURI);
 const { Todo } = require('./server/models/todo');
 
 var oauth2;
+var accessToken;
 
 app.get('/', (req, res) => {
     var conn = new jsforce.Connection({
@@ -26,10 +27,12 @@ app.get('/', (req, res) => {
       });
       conn.login('sumit.dev1@ceptes.com', 'sumit1234', function(err, userInfo) {
            res.send(userInfo);
-           /* if (err) { return console.error(err); }
+            if (err) { return console.error(err); }
             // Now you can get the access token and instance URL information.
             // Save them to establish connection next time.
             console.log(conn.accessToken);
+            accessToken = conn.instanceUrl;
+            
             console.log(conn.instanceUrl);
             // logged in user property
             console.log("User ID: " + userInfo.id);
@@ -39,6 +42,7 @@ app.get('/', (req, res) => {
 //get all list
 app.get('/todos', async (req, res) => {
       oauth2 = new jsforce.OAuth2({
+            loginUrl:'https://sumit8493-dev-ed.my.salesforce.com',
             clientId : keys.clientId,
             clientSecret : keys.clientSecret,
             redirectUri : 'https://todo211205.herokuapp.com/oauth2/callback'

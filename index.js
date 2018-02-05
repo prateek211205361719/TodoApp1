@@ -74,11 +74,15 @@ app.post('/todos', async (req, res) => {
 });
 
 //update todo
-
-app.post('/newContact', (req, res) => {
-    res.send('hello how are u');
-});
-
+app.post("/new_contact", function(req, res) { 
+       res.status(200).send();
+       /* var notification = req.body["soapenv:envelope"]["soapenv:body"][0]["notifications"][0]; 
+        var sessionId = notification["sessionid"][0]; var data = {}; if (notification["notification"] !== undefined) {
+        var sobject = notification["notification"][0]["sobject"][0]; Object.keys(sobject).forEach(function(key) { 
+        if (key.indexOf("sf:") == 0) { 
+            var newKey = key.substr(3); data[newKey] = sobject[key][0]; 
+        }*/
+ }); 
 app.patch('/todos/:id', async (req, res) => {
     var id = req.params.id;
     if(!ObjectID.isValid(id)){

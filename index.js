@@ -35,7 +35,7 @@ app.get('/oauth2/callback', (req, res) => {
     var conn = new jsforce.Connection({ oauth2 : oauth2 });
     var code = req.param('code');
     conn.authorize(code, function(err, userInfo) {
-        if (err) { return console.error(err); }
+        res.send(err);
     });
 });
 

@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 //get all list
 app.get('/todos', async (req, res) => {
       oauth2 = new jsforce.OAuth2({
-            loginUrl:'https://login.salesforce.com', 
+            loginUrl:'https://sumit8493-dev-ed.my.salesforce.com', 
             clientId : keys.clientId,
             clientSecret : keys.clientSecret,
             redirectUri : 'https://todo211205.herokuapp.com/oauth2/callback'
@@ -52,15 +52,19 @@ app.get('/todos', async (req, res) => {
        res.status(400).send(e); 
     }*/
 });
+  app.get("/auth/login", function(req, res) {
+    // Redirect to Salesforce login/authorization page
+    res.redirect(oauth2.getAuthorizationUrl({scope: 'api id web refresh_token'}));
+  });
+    app.get("/oauth2/callback", function(req, res) {
+        const conn = new jsforce.Connection({oauth2: oauth2});
+        const code = req.query.code;
+        conn.authorize(code, function(err, userInfo) {
+            res.send(userInfo);
+        });
+    
+    });
 
-app.get('/oauth2/callback', (req, res) => {
-    res.send(oauth2);
-   /* var conn = new jsforce.Connection({ oauth2 : oauth2 });
-    var code = req.param('code');
-    conn.authorize(code, function(err, userInfo) {
-        res.send(err);
-    });*/
-});
 
 //create todo
 app.post('/todos', async (req, res) => {
